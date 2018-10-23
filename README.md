@@ -1,7 +1,7 @@
 # blurmybackground
 BlurMyBackground is utillity for bluring your desktop background picture when there are clients open/visible.
 
-![]( blurmybackground/blurmybackground.giff )
+![](https://github.com/bejnpenik/blurmybackground/blob/master/blurmybackground.giff)
 
 Clone:
 git clone https://github.com/bejnpenik/blurmybackground.git
