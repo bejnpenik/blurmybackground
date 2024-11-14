@@ -48,9 +48,8 @@ int is_desktop_empty(void);
 void cleanup(void);
 void setup(void);
 __attribute__((noreturn))
-void err(char *fmt, ...)
-{
-	va_list ap;
+void err(char *fmt, ...) {
+    va_list ap;
 	va_start(ap, fmt);
 	vfprintf(stderr, fmt, ap);
 	va_end(ap);
@@ -92,22 +91,21 @@ xcb_pixmap_t create_bg_pixmap(const char *filename) {
 	return bg_pixmap;
 }
 
-void handle_signal(int sig)
-{
+void handle_signal(int sig) {
 	if (sig == SIGTERM || sig == SIGINT || sig == SIGHUP)
 		run = 0;
 		
 }
 
 
-void register_root_events(void){
+void register_root_events(void) {
 	uint32_t values[] = {XCB_EVENT_MASK_PROPERTY_CHANGE};
 	xcb_generic_error_t *err = xcb_request_check(dpy, xcb_change_window_attributes_checked(dpy, screen->root, XCB_CW_EVENT_MASK, values));
 	if (err != NULL)
 		run = 0;	
 }
 
-void get_blur_image_path(void){
+void get_blur_image_path(void) {
 	#define ThrowWandException(wand) \
 	{ \
 	  char \
@@ -139,12 +137,12 @@ void get_blur_image_path(void){
 		MagickWandTerminus();
 	}
 }
-void set_pixmap_background(xcb_pixmap_t bg_pixmap){
+void set_pixmap_background(xcb_pixmap_t bg_pixmap) {
 	xcb_change_window_attributes(dpy, root, XCB_CW_BACK_PIXMAP, (uint32_t[1]){bg_pixmap});
 	xcb_clear_area(dpy, 0, root, 0, 0, resolution[0], resolution[1]);
 	xcb_flush(dpy);
 } 
-void desktop_focus_change(void){
+void desktop_focus_change(void) {
 	if (xcb_ewmh_get_current_desktop_reply(ewmh, xcb_ewmh_get_current_desktop(ewmh, default_screen), &current_desktop, NULL) != 1){
 		current_desktop = -1;
 	}
@@ -161,7 +159,7 @@ int task_focus_change(void){
 		
 }
 
-int is_task_hidden(xcb_window_t win){
+int is_task_hidden(xcb_window_t win) {
 	xcb_ewmh_get_atoms_reply_t ewmh_atoms_reply;
 	if (xcb_ewmh_get_wm_state_reply(ewmh, xcb_ewmh_get_wm_state(ewmh, win), &ewmh_atoms_reply, NULL ) == 1){
 		if (ewmh_atoms_reply.atoms_len > 0){
@@ -175,7 +173,7 @@ int is_task_hidden(xcb_window_t win){
 	}
 	return 0;
 }
-int is_desktop_empty(void){
+int is_desktop_empty(void) {
 	int nbr_of_tasks = 0;
 	uint32_t task_desktop;
 	xcb_ewmh_get_windows_reply_t win_reply;xcb_window_t *wins = NULL;
@@ -199,7 +197,7 @@ int is_desktop_empty(void){
 	}
 	return 1;	
 }
-void cleanup(void){
+void cleanup(void) {
 	xcb_ewmh_connection_wipe(ewmh);
 	free(ewmh);
 	xcb_free_pixmap(dpy, original_background);
@@ -207,8 +205,7 @@ void cleanup(void){
 	xcb_disconnect(dpy);	
 }
 
-void setup(void)
-{
+void setup(void) {
 	dpy = xcb_connect(NULL, &default_screen);
 	if (xcb_connection_has_error(dpy))
 		err("Can't open display.\n");
@@ -229,7 +226,7 @@ void setup(void)
 	blurred_background = create_bg_pixmap(blurred_image_tmp_path);
 	
 }
-int main(int argc, char*argv[]){
+int main(int argc, char*argv[]) {
 	if (argc != 3){
 		err("Usage ./blur -i /path/to/image_file");
 		return 1;
